@@ -1,11 +1,20 @@
 import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+import Dashboard from './pages/Dashboard';
+import useStore from './store';
 
-function App() {
+const App: React.FC = () => {
+  const user = useStore(state => state.user);
+
   return (
-    <div>
-      <h1>欢迎使用MouseFit小鼠笼位管理系统</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
