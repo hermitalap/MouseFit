@@ -103,3 +103,15 @@
 ```
 
 以上文档可有效指导Codex或Copilot进行辅助开发，明确功能需求与开发目标。
+
+## Demo Usage
+
+1. 安装依赖并启动服务器：
+   ```bash
+   cd server && npm install && npm start
+   ```
+2. 浏览器访问 `http://localhost:3000` 打开前端界面。
+3. 使用默认账号 `admin/admin` 登录后即可测试笼位与鼠只的基本管理功能。
+
+该 Demo 仅实现了登录、笼位和鼠只的增删示例，数据保存在 `server/data.json` 中，
+方便后续扩展其他功能。
