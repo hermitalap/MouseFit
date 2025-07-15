@@ -14,6 +14,9 @@ const CageGrid: React.FC = () => {
   const cages = useStore(state => state.cages);
   const addCage = useStore(state => state.addCage);
   const updateCage = useStore(state => state.updateCage);
+  const setSelectedCage = useStore(state => state.setSelectedCage);
+  const moveMouse = useStore(state => state.moveMouse);
+  const selectedCageId = useStore(state => state.selectedCageId);
   const { rows, cols } = useStore(state => state.gridConfig);
 
   const [open, setOpen] = useState(false);
@@ -21,6 +24,11 @@ const CageGrid: React.FC = () => {
   const [status, setStatus] = useState('');
 
   const handleCellClick = (row: number, col: number) => {
+    const cage = cages.find(c => c.position.row === row && c.position.col === col);
+    setSelectedCage(cage ? cage.id : undefined);
+  };
+
+  const handleCellDoubleClick = (row: number, col: number) => {
     const cage = cages.find(c => c.position.row === row && c.position.col === col);
     if (cage) {
       setEditing(cage);
@@ -49,7 +57,24 @@ const CageGrid: React.FC = () => {
       <Paper
         key={`${row}-${col}`}
         onClick={() => handleCellClick(row, col)}
-        sx={{ height: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+        onDoubleClick={() => handleCellDoubleClick(row, col)}
+        onDragOver={e => e.preventDefault()}
+        onDrop={e => {
+          const mouseId = e.dataTransfer.getData('text/plain');
+          if (mouseId) moveMouse(mouseId, cage ? cage.id : `C${row}${col}`);
+          setSelectedCage(cage ? cage.id : `C${row}${col}`);
+        }}
+        sx={{
+          height: 80,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          border: selectedCageId === (cage ? cage.id : `C${row}${col}`)
+            ? '2px solid #1976d2'
+            : '1px solid #ccc',
+        }}
       >
         <Typography>{cage ? cage.id : `空(${row},${col})`}</Typography>
         {cage?.status && (

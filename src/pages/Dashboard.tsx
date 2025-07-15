@@ -1,7 +1,8 @@
 import React from 'react';
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CageGrid from '../components/CageGrid';
+import MousePanel from '../components/MousePanel';
 import useStore from '../store';
 import Layout from '../components/Layout';
 
@@ -19,7 +20,14 @@ const Dashboard: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         笼位管理
       </Typography>
-      <CageGrid />
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '70vh' }}>
+        <Box sx={{ flex: 2, overflow: 'auto' }}>
+          <CageGrid />
+        </Box>
+        <Box sx={{ flex: 1, mt: 2, overflow: 'hidden' }}>
+          <MousePanel />
+        </Box>
+      </Box>
     </Layout>
   );
 };
