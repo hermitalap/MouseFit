@@ -1,12 +1,12 @@
 import React from 'react';
-import { Container, Typography, Button } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CageGrid from '../components/CageGrid';
 import useStore from '../store';
+import Layout from '../components/Layout';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const logout = useStore(state => state.logout);
   const user = useStore(state => state.user);
 
   if (!user) {
@@ -15,15 +15,12 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <Container sx={{ mt: 4 }}>
+    <Layout>
       <Typography variant="h4" gutterBottom>
         笼位管理
       </Typography>
-      <Button variant="outlined" onClick={() => { logout(); navigate('/login'); }} sx={{ mb: 2 }}>
-        退出登录
-      </Button>
       <CageGrid />
-    </Container>
+    </Layout>
   );
 };
 
