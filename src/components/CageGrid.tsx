@@ -12,6 +12,7 @@ const STATUS_OPTIONS = [
 
 const CageGrid: React.FC = () => {
   const cages = useStore(state => state.cages);
+  const selectedRackId = useStore(state => state.selectedRackId);
   const addCage = useStore(state => state.addCage);
   const updateCage = useStore(state => state.updateCage);
   const setSelectedCage = useStore(state => state.setSelectedCage);
@@ -24,17 +25,21 @@ const CageGrid: React.FC = () => {
   const [status, setStatus] = useState('');
 
   const handleCellClick = (row: number, col: number) => {
-    const cage = cages.find(c => c.position.row === row && c.position.col === col);
+    const cage = cages.find(
+      c => c.rackId === selectedRackId && c.position.row === row && c.position.col === col
+    );
     setSelectedCage(cage ? cage.id : undefined);
   };
 
   const handleCellDoubleClick = (row: number, col: number) => {
-    const cage = cages.find(c => c.position.row === row && c.position.col === col);
+    const cage = cages.find(
+      c => c.rackId === selectedRackId && c.position.row === row && c.position.col === col
+    );
     if (cage) {
       setEditing(cage);
       setStatus(cage.status);
     } else {
-      setEditing({ id: `C${row}${col}`, position: { row, col }, status: '', mice: [] });
+      setEditing({ id: `C${row}${col}`, rackId: selectedRackId, position: { row, col }, status: '', mice: [] });
       setStatus('');
     }
     setOpen(true);
@@ -52,9 +57,12 @@ const CageGrid: React.FC = () => {
   };
 
   const renderCell = (row: number, col: number) => {
-    const cage = cages.find(c => c.position.row === row && c.position.col === col);
+    const cage = cages.find(
+      c => c.rackId === selectedRackId && c.position.row === row && c.position.col === col
+    );
     return (
       <Paper
+        variant="outlined"
         key={`${row}-${col}`}
         onClick={() => handleCellClick(row, col)}
         onDoubleClick={() => handleCellDoubleClick(row, col)}
@@ -85,7 +93,7 @@ const CageGrid: React.FC = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{ border: 1, p: 1 }}>
       <Box
         sx={{
           display: 'grid',

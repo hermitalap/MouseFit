@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export interface Cage {
   id: string;
+  rackId: string;
   position: { row: number; col: number };
   status: string;
   mice: string[];
@@ -29,6 +30,7 @@ interface State {
   mice: Mouse[];
   gridConfig: { rows: number; cols: number };
   user?: User;
+  selectedRackId: string;
   selectedCageId?: string;
   login: (username: string, password: string) => boolean;
   logout: () => void;
@@ -38,6 +40,7 @@ interface State {
   addMouse: (mouse: Mouse) => void;
   updateMouse: (mouse: Mouse) => void;
   setSelectedCage: (id: string | undefined) => void;
+  setSelectedRack: (id: string) => void;
   moveMouse: (mouseId: string, targetCageId: string) => void;
 }
 
@@ -45,11 +48,13 @@ const useStore = create<State>()(
   persist(
     (set, get) => ({
       cages: [
-        { id: 'C11', position: { row: 1, col: 1 }, status: '配对中', mice: ['M001', 'M002'] },
-        { id: 'C12', position: { row: 1, col: 2 }, status: '隔离中', mice: ['M003'] },
-        { id: 'C13', position: { row: 1, col: 3 }, status: '待鉴定', mice: [] },
-        { id: 'C21', position: { row: 2, col: 1 }, status: '已怀孕', mice: [] },
-        { id: 'C22', position: { row: 2, col: 2 }, status: '临产', mice: ['M004', 'M005'] },
+        { id: 'C11', rackId: 'R1', position: { row: 1, col: 1 }, status: '配对中', mice: ['M001', 'M002'] },
+        { id: 'C12', rackId: 'R1', position: { row: 1, col: 2 }, status: '隔离中', mice: ['M003'] },
+        { id: 'C13', rackId: 'R1', position: { row: 1, col: 3 }, status: '待鉴定', mice: [] },
+        { id: 'C21', rackId: 'R1', position: { row: 2, col: 1 }, status: '已怀孕', mice: [] },
+        { id: 'C22', rackId: 'R1', position: { row: 2, col: 2 }, status: '临产', mice: ['M004', 'M005'] },
+        { id: 'D11', rackId: 'R2', position: { row: 1, col: 1 }, status: '', mice: [] },
+        { id: 'D12', rackId: 'R2', position: { row: 1, col: 2 }, status: '', mice: [] },
       ],
       mice: [
         {
@@ -105,6 +110,7 @@ const useStore = create<State>()(
       ],
       gridConfig: { rows: 3, cols: 3 },
       user: undefined,
+      selectedRackId: 'R1',
       selectedCageId: 'C11',
       login: (username: string, password: string) => {
         if (username === 'admin' && password === 'admin') {
@@ -129,6 +135,7 @@ const useStore = create<State>()(
       updateMouse: (mouse: Mouse) =>
         set({ mice: get().mice.map(m => (m.id === mouse.id ? mouse : m)) }),
       setSelectedCage: (id: string | undefined) => set({ selectedCageId: id }),
+      setSelectedRack: (id: string) => set({ selectedRackId: id }),
       moveMouse: (mouseId: string, targetCageId: string) => {
         const updatedCages = get().cages.map(c => {
           let mice = c.mice;
